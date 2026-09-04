@@ -31,3 +31,6 @@ This project follows spec-driven design using the `/spec` and `/spec-impl` skill
 ```bash
 npx skills@latest add Klerith/fernando-skills
 ```
+## Skills
+
+- Always use /frontend-design to design UI.
