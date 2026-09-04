@@ -1,32 +1,38 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Cross-platform: This tool must run on macOS, Linux, and Windows
+    - Always use path.join()/path.resolve() for file paths
+    - Never hardcode forward slashes
+    - Tests must assert paths via path.join(), not literal strings
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+rules:
+  proposal:
+    - Keep proposals under 500 words
+    - Always include a "Non-goals" section
+    - Mention user-visible impact and any rollback strategy
+  specs:
+    - Use Given/When/Then scenarios for all behavioral requirements
+    - Include a scenario for Windows path handling wherever file paths are involved
+  design:
+    - Note the persistence approach and which services/views are affected
+    - Call out any new external dependencies and why they're needed
+  tasks:
+    - Keep tasks small and implementation-ready
+    - Write each task as an independently completable, checkable unit
+    - Do not mark a task as done in tasks.md until the user has confirmed it manually
+  review:
+    - Confirm rollback plan is documented before sign-off
 
-# Per-operation guidance (optional)
-# Add advisory guidance for how apply and archive work should be conducted.
-# This is separate from artifact rules above.
-# Example:
-#   operations:
-#     apply:
-#       guidance:
-#         - Keep test summaries concise
-#     archive:
-#       guidance:
-#         - Summarize the archive outcome before finishing
+operations:
+  apply:
+    guidance:
+      - Keep test summaries concise
+      - Run lint and typecheck before marking a task complete
+      - Implement one task at a time, in order — do not start the next task until told to
+      - After completing a task, stop and report what was done, then wait for manual confirmation before proceeding
+      - Do not batch multiple tasks together in a single pass, even if they look related
+  archive:
+    guidance:
+      - Summarize the archive outcome before finishing
+      - Flag any deltas that were skipped and explain why

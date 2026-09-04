@@ -15,7 +15,7 @@ export default function AccesoPage() {
 	const submit = (e: React.FormEvent) => {
 		e.preventDefault();
 		signIn({ name: (user || 'PLAYER1').toUpperCase().slice(0, 10) });
-		router.push('/');
+		router.push('/games');
 	};
 
 	return (
@@ -83,7 +83,7 @@ export default function AccesoPage() {
 					className="btn ghost"
 					onClick={() => {
 						signIn(null);
-						router.push('/');
+						router.push('/games');
 					}}
 					style={{ width: '100%', marginTop: 10 }}
 					type="button"

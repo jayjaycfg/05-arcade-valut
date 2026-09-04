@@ -18,7 +18,7 @@ export default function GameNotFound() {
         Este cartucho no existe en la bóveda. Puede que se haya perdido en el
         vacío del espacio.
       </p>
-      <Link className="btn lg" href="/">
+      <Link className="btn lg" href="/games">
         VOLVER AL VAULT
       </Link>
     </div>

@@ -1,16 +1,40 @@
-import { GameGrid } from "@/components/GameGrid";
+import { ActivitySection } from "@/components/home/ActivitySection";
+import { FeatureGrid } from "@/components/home/FeatureGrid";
+import { FinalCta } from "@/components/home/FinalCta";
+import { GamesRail } from "@/components/home/GamesRail";
+import { HeroSection } from "@/components/home/HeroSection";
+import { PricingSection } from "@/components/home/PricingSection";
+import { Reveal } from "@/components/home/Reveal";
+import { StatsBand } from "@/components/home/StatsBand";
 
 export default function Home() {
   return (
-    <div className="fade-in">
-      <section className="av-hero">
-        <h1 className="flicker">ARCADE VAULT</h1>
-        <div className="sub">
-          INSERTA UNA MONEDA PARA JUGAR <span className="blink">_</span>
-        </div>
-      </section>
+    <div className="home fade-in">
+      <HeroSection />
 
-      <GameGrid />
+      <Reveal>
+        <FeatureGrid />
+      </Reveal>
+
+      <Reveal>
+        <GamesRail />
+      </Reveal>
+
+      <Reveal>
+        <StatsBand />
+      </Reveal>
+
+      <Reveal>
+        <ActivitySection />
+      </Reveal>
+
+      <Reveal>
+        <PricingSection />
+      </Reveal>
+
+      <Reveal>
+        <FinalCta />
+      </Reveal>
     </div>
   );
 }
