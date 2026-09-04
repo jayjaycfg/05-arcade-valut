@@ -26,11 +26,8 @@ No test runner is configured yet.
 
 ## Spec-driven development
 
-This project follows spec-driven design using the `/spec` and `/spec-impl` skills from https://github.com/Klerith/fernando-skills, installed via:
+This project follows spec-driven design using `openSpec`
 
-```bash
-npx skills@latest add Klerith/fernando-skills
-```
 ## Skills
 
 - Always use /frontend-design to design UI.
