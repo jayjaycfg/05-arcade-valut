@@ -420,16 +420,22 @@ export function createAsteroidsGame(
 		lives--;
 		if (lives <= 0) {
 			state = 'gameover';
+			callbacks.onGameOver?.(score);
 		} else {
 			state = 'dead';
 			deadTimer = 2;
 		}
 	}
 
+	function reportState() {
+		callbacks.onState?.({ score, lives, level, gameOver: state === 'gameover' });
+	}
+
 	function update(dt: number) {
 		if (state === 'gameover') {
 			particles.forEach((p) => p.update(dt));
 			particles = particles.filter((p) => !p.dead);
+			reportState();
 			return;
 		}
 
@@ -442,6 +448,7 @@ export function createAsteroidsGame(
 				state = 'playing';
 				ship.reset();
 			}
+			reportState();
 			return;
 		}
 
@@ -503,6 +510,8 @@ export function createAsteroidsGame(
 
 		// Nivel completado
 		if (asteroids.length === 0) nextLevel();
+
+		reportState();
 	}
 
 	function draw() {
