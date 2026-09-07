@@ -17,7 +17,7 @@
 - [x] 3.3 Wire the existing "PAUSA"/"REANUDAR" button to call the engine's `pause()`/`resume()` for the `asteroids` branch (in addition to the existing `paused` state toggle that drives the overlay), and verify by pausing mid-game: asteroids/ship freeze on screen and arrow/space input has no effect until resumed.
 - [x] 3.4 Make `onGameOver` (last life lost) set the same `over` state the "FIN" button sets today, seeded with the engine's reported final score, and verify by playing until all lives are lost and confirming the existing game-over modal appears with the correct score, without pressing "FIN".
 - [x] 3.5 Make "JUGAR DE NUEVO" call the engine's `reset()` for the `asteroids` branch (in addition to the existing `restart()` state reset) and verify by finishing a game, clicking replay, and confirming a fresh session starts (score 0, 3 lives, level 1, ship centered) without navigating away.
-- [ ] 3.6 Confirm unmounting the play screen (clicking "SALIR" or navigating away mid-session) tears the engine down cleanly — verify by checking, after navigating away and back into `asteroids` several times, that only one set of keyboard listeners/one RAF loop is ever active (no runaway asteroid speed-up or duplicated input response from stacked listeners).
+- [x] 3.6 Confirm unmounting the play screen (clicking "SALIR" or navigating away mid-session) tears the engine down cleanly — verify by checking, after navigating away and back into `asteroids` several times, that only one set of keyboard listeners/one RAF loop is ever active (no runaway asteroid speed-up or duplicated input response from stacked listeners).
 
 ## 4. Regression check on other games
 
