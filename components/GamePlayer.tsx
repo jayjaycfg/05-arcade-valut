@@ -62,7 +62,18 @@ export function GamePlayer({ game }: { game: Game }) {
 					</div>
 				</div>
 				<div className="hud-actions">
-					<button className="btn yellow" onClick={() => setPaused((p) => !p)} type="button">
+					<button
+						className="btn yellow"
+						onClick={() => {
+							setPaused((p) => {
+								const next = !p;
+								if (next) asteroidsRef.current?.pause();
+								else asteroidsRef.current?.resume();
+								return next;
+							});
+						}}
+						type="button"
+					>
 						{paused ? 'REANUDAR' : 'PAUSA'}
 					</button>
 					<button className="btn magenta" onClick={endGame} type="button">
