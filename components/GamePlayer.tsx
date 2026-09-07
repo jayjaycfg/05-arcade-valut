@@ -1,14 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { AsteroidsGame, type AsteroidsGameHandle } from '@/components/games/AsteroidsGame';
 import { useAuth } from '@/lib/auth-context';
 import type { Game } from '@/lib/games';
 
 export function GamePlayer({ game }: { game: Game }) {
 	const { user, saveScore } = useAuth();
+	const isAsteroids = game.id === 'asteroids';
+	const asteroidsRef = useRef<AsteroidsGameHandle>(null);
 	const [score, setScore] = useState(0);
-	const [lives] = useState(3);
+	const [lives, setLives] = useState(3);
 	const [level, setLevel] = useState(1);
 	const [paused, setPaused] = useState(false);
 	const [over, setOver] = useState(false);
@@ -16,18 +19,21 @@ export function GamePlayer({ game }: { game: Game }) {
 	const [saved, setSaved] = useState(false);
 
 	useEffect(() => {
-		if (over || paused) return;
+		if (isAsteroids || over || paused) return;
 		const t = setInterval(() => setScore((s) => s + Math.floor(10 + Math.random() * 90)), 220);
 		return () => clearInterval(t);
-	}, [over, paused]);
+	}, [isAsteroids, over, paused]);
 
 	useEffect(() => {
+		if (isAsteroids) return;
 		if (score > 0 && score % 2500 < 100) setLevel((l) => l + 1);
-	}, [score]);
+	}, [isAsteroids, score]);
 
 	const endGame = () => setOver(true);
 	const restart = () => {
+		if (isAsteroids) asteroidsRef.current?.reset();
 		setScore(0);
+		setLives(3);
 		setLevel(1);
 		setPaused(false);
 		setOver(false);
@@ -58,7 +64,18 @@ export function GamePlayer({ game }: { game: Game }) {
 					</div>
 				</div>
 				<div className="hud-actions">
-					<button className="btn yellow" onClick={() => setPaused((p) => !p)} type="button">
+					<button
+						className="btn yellow"
+						onClick={() => {
+							setPaused((p) => {
+								const next = !p;
+								if (next) asteroidsRef.current?.pause();
+								else asteroidsRef.current?.resume();
+								return next;
+							});
+						}}
+						type="button"
+					>
 						{paused ? 'REANUDAR' : 'PAUSA'}
 					</button>
 					<button className="btn magenta" onClick={endGame} type="button">
@@ -72,13 +89,28 @@ export function GamePlayer({ game }: { game: Game }) {
 
 			<div className="crt">
 				<div className="crt-screen">
-					<div className="game-arena">
-						<div className="grid-floor" />
-						<div className="enemy e1" />
-						<div className="enemy e2" />
-						<div className="enemy e3" />
-						<div className="player-ship" />
-					</div>
+					{isAsteroids ? (
+						<AsteroidsGame
+							ref={asteroidsRef}
+							onState={(s) => {
+								setScore(s.score);
+								setLives(s.lives);
+								setLevel(s.level);
+							}}
+							onGameOver={(finalScore) => {
+								setScore(finalScore);
+								setOver(true);
+							}}
+						/>
+					) : (
+						<div className="game-arena">
+							<div className="grid-floor" />
+							<div className="enemy e1" />
+							<div className="enemy e2" />
+							<div className="enemy e3" />
+							<div className="player-ship" />
+						</div>
+					)}
 					{paused && (
 						<div className="crt-content" style={{ background: 'rgba(0,0,0,0.6)', zIndex: 5 }}>
 							<div>

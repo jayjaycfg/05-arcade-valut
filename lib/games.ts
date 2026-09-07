@@ -89,6 +89,17 @@ export const GAMES: Game[] = [
 		plays: '6.4K',
 	},
 	{
+		id: 'asteroids',
+		title: 'ASTEROIDS',
+		short: 'Nave, rocas y disparos en el vacío toroidal.',
+		long: 'Pilota una nave triangular a la deriva en un campo de asteroides sin bordes: lo que sale por un lado reaparece por el opuesto. Dispara para partir las rocas en fragmentos cada vez más pequeños, esquiva los choques y sobrevive oleada tras oleada.',
+		cat: 'SHOOTER',
+		cover: 'cover-asteroids',
+		color: 'cyan',
+		best: 37650,
+		plays: '2.1K',
+	},
+	{
 		id: 'duelo-pixel',
 		title: 'DUELO PIXEL',
 		short: 'Dos paletas. Una pelota. Reflejos máximos.',

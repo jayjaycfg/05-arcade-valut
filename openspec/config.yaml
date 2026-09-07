@@ -20,7 +20,6 @@ rules:
   tasks:
     - Keep tasks small and implementation-ready
     - Write each task as an independently completable, checkable unit
-    - Do not mark a task as done in tasks.md until the user has confirmed it manually
   review:
     - Confirm rollback plan is documented before sign-off
 
@@ -29,9 +28,8 @@ operations:
     guidance:
       - Keep test summaries concise
       - Run lint and typecheck before marking a task complete
-      - Implement one task at a time, in order — do not start the next task until told to
-      - After completing a task, stop and report what was done, then wait for manual confirmation before proceeding
-      - Do not batch multiple tasks together in a single pass, even if they look related
+      - Implement one step at a time, in order — do not start the next step until told to
+      - After completing a step, stop and report what was done, then wait for manual confirmation before proceeding
   archive:
     guidance:
       - Summarize the archive outcome before finishing
