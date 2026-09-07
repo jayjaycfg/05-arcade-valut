@@ -31,7 +31,9 @@ export function GamePlayer({ game }: { game: Game }) {
 
 	const endGame = () => setOver(true);
 	const restart = () => {
+		if (isAsteroids) asteroidsRef.current?.reset();
 		setScore(0);
+		setLives(3);
 		setLevel(1);
 		setPaused(false);
 		setOver(false);
