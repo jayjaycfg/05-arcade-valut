@@ -341,6 +341,7 @@ export function createAsteroidsGame(
 
 	const keys: Record<string, boolean> = {};
 	const justPressed: Record<string, boolean> = {};
+	let running = true;
 
 	function pressed(code: string): boolean {
 		const val = justPressed[code];
@@ -349,6 +350,7 @@ export function createAsteroidsGame(
 	}
 
 	const onKeyDown = (e: KeyboardEvent) => {
+		if (!running) return;
 		if (!keys[e.code]) justPressed[e.code] = true;
 		keys[e.code] = true;
 	};
@@ -529,6 +531,12 @@ export function createAsteroidsGame(
 	let lastTime: number | null = null;
 
 	function loop(ts: number) {
+		if (!running) {
+			lastTime = null;
+			draw();
+			rafId = requestAnimationFrame(loop);
+			return;
+		}
 		const dt = lastTime === null ? 0 : Math.min((ts - lastTime) / 1000, 0.05);
 		lastTime = ts;
 		update(dt);
@@ -540,9 +548,22 @@ export function createAsteroidsGame(
 	rafId = requestAnimationFrame(loop);
 
 	return {
-		pause: () => {},
-		resume: () => {},
-		reset: () => {},
-		destroy: () => {},
+		pause: () => {
+			running = false;
+		},
+		resume: () => {
+			running = true;
+		},
+		reset: () => {
+			initGame();
+			running = true;
+			reportState();
+		},
+		destroy: () => {
+			running = false;
+			if (rafId !== null) cancelAnimationFrame(rafId);
+			window.removeEventListener('keydown', onKeyDown);
+			window.removeEventListener('keyup', onKeyUp);
+		},
 	};
 }
