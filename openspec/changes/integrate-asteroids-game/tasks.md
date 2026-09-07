@@ -21,5 +21,5 @@
 
 ## 4. Regression check on other games
 
-- [ ] 4.1 Verify `rocas` and every other non-`asteroids` catalog game (`bloque-buster`, `caida`, `serpentina`, `gloton`, `invasores`, `ranaria`, `duelo-pixel`) still show the original simulated score ticker, pause/resume, and end-of-game score submission unchanged, by spot-checking `rocas` plus at least one other such game end-to-end.
-- [ ] 4.2 Run `npm run lint` and `npm run build`, and verify both complete with no new errors introduced by this change.
+- [x] 4.1 Verify `rocas` and every other non-`asteroids` catalog game (`bloque-buster`, `caida`, `serpentina`, `gloton`, `invasores`, `ranaria`, `duelo-pixel`) still show the original simulated score ticker, pause/resume, and end-of-game score submission unchanged, by spot-checking `rocas` plus at least one other such game end-to-end.
+- [x] 4.2 Run `npm run lint` and `npm run build`, and verify both complete with no new errors introduced by this change.

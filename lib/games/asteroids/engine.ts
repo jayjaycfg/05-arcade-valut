@@ -435,7 +435,9 @@ export function createAsteroidsGame(
 
 	function update(dt: number) {
 		if (state === 'gameover') {
-			particles.forEach((p) => p.update(dt));
+			particles.forEach((p) => {
+				p.update(dt);
+			});
 			particles = particles.filter((p) => !p.dead);
 			reportState();
 			return;
@@ -443,9 +445,13 @@ export function createAsteroidsGame(
 
 		if (state === 'dead') {
 			deadTimer -= dt;
-			particles.forEach((p) => p.update(dt));
+			particles.forEach((p) => {
+				p.update(dt);
+			});
 			particles = particles.filter((p) => !p.dead);
-			asteroids.forEach((a) => a.update(dt));
+			asteroids.forEach((a) => {
+				a.update(dt);
+			});
 			if (deadTimer <= 0) {
 				state = 'playing';
 				ship.reset();
@@ -460,10 +466,18 @@ export function createAsteroidsGame(
 		}
 
 		ship.update(dt, keys);
-		bullets.forEach((b) => b.update(dt));
-		asteroids.forEach((a) => a.update(dt));
-		particles.forEach((p) => p.update(dt));
-		powerUps.forEach((p) => p.update(dt));
+		bullets.forEach((b) => {
+			b.update(dt);
+		});
+		asteroids.forEach((a) => {
+			a.update(dt);
+		});
+		particles.forEach((p) => {
+			p.update(dt);
+		});
+		powerUps.forEach((p) => {
+			p.update(dt);
+		});
 
 		bullets = bullets.filter((b) => !b.dead);
 		particles = particles.filter((p) => !p.dead);
@@ -520,10 +534,18 @@ export function createAsteroidsGame(
 		ctx.fillStyle = '#000';
 		ctx.fillRect(0, 0, W, H);
 
-		particles.forEach((p) => p.draw(ctx));
-		asteroids.forEach((a) => a.draw(ctx));
-		powerUps.forEach((p) => p.draw(ctx));
-		bullets.forEach((b) => b.draw(ctx));
+		particles.forEach((p) => {
+			p.draw(ctx);
+		});
+		asteroids.forEach((a) => {
+			a.draw(ctx);
+		});
+		powerUps.forEach((p) => {
+			p.draw(ctx);
+		});
+		bullets.forEach((b) => {
+			b.draw(ctx);
+		});
 		ship.draw(ctx);
 	}
 
