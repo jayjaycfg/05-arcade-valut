@@ -146,6 +146,11 @@ export type ScoreRow = {
 	date: string;
 };
 
+/** Deterministic fake leaderboard data. Still used by the landing page
+ * (`lib/home.ts`, which requires deterministic activity content) and by
+ * `components/HallOfFame.tsx`. The real per-game leaderboard on a game's
+ * detail page reads persisted scores via `lib/leaderboard-server.ts`
+ * instead — see openspec/changes/add-per-game-leaderboard. */
 export function seededScores(seed: number, count = 12): ScoreRow[] {
 	let s = seed;
 	const rand = () => {
