@@ -8,6 +8,12 @@ context: |
 
 rules:
   proposal:
+    - Before creating any proposal.md, first ask the user which Jira ticket or User Story is associated with this change
+    - Do not create proposal.md until a ticket ID has been provided — if the user gives none, stop and ask again
+    - The ticket ID must be prefixed with "SPEC-" exactly; the "SPEC-" prefix is fixed and must never be altered, removed, or reformatted
+    - Name the change folder (the directory containing proposal.md, tasks.md, design.md, specs.md) "SPEC-<ticket-number>-<short-kebab-case-title>", not the individual files inside it — files keep their standard names (proposal.md, tasks.md, design.md, specs.md)
+    - Example: ticket "SPEC-123" for a login module creates the folder "SPEC-123-login-module/" containing "proposal.md", "tasks.md", "design.md", "specs.md"
+    - Confirm the final folder name back to the user after creating it
     - Keep proposals under 500 words
     - Always include a "Non-goals" section
     - Mention user-visible impact and any rollback strategy
@@ -28,8 +34,8 @@ operations:
     guidance:
       - Keep test summaries concise
       - Run lint and typecheck before marking a task complete
-      - Implement one step at a time, in order — do not start the next step until told to
       - After completing a step, stop and report what was done, then wait for manual confirmation before proceeding
+      - An step is completed when all tasks in the step are done, not when a single task is done
   archive:
     guidance:
       - Summarize the archive outcome before finishing

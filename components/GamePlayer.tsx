@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { revalidateLeaderboard } from '@/app/actions/revalidate-leaderboard';
 import { AsteroidsGame, type AsteroidsGameHandle } from '@/components/games/AsteroidsGame';
 import { useAuth } from '@/lib/auth-context';
 import type { Game } from '@/lib/games';
+import { submitScore } from '@/lib/leaderboard-client';
 
 export function GamePlayer({ game }: { game: Game }) {
 	const { user, saveScore } = useAuth();
@@ -17,6 +19,8 @@ export function GamePlayer({ game }: { game: Game }) {
 	const [over, setOver] = useState(false);
 	const [name, setName] = useState(user ? user.name : 'INVITADO');
 	const [saved, setSaved] = useState(false);
+	const [submitting, setSubmitting] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (isAsteroids || over || paused) return;
@@ -38,6 +42,33 @@ export function GamePlayer({ game }: { game: Game }) {
 		setPaused(false);
 		setOver(false);
 		setSaved(false);
+		setSubmitting(false);
+		setError(null);
+	};
+
+	const submitFinalScore = async () => {
+		if (submitting || saved) return;
+		setSubmitting(true);
+		setError(null);
+		// Local mirror kept as an offline fallback — the Supabase write below is
+		// the source of truth for the real leaderboard (design.md - Decisions).
+		saveScore({ game: game.id, score, name });
+		try {
+			const result = await submitScore({ gameId: game.id, score, name });
+			if (result.ok) {
+				setSaved(true);
+				// Fire-and-forget: a failed cache bust must not fail the submit
+				// that already succeeded. The page's own 60s revalidate window is
+				// the fallback if this doesn't land.
+				void revalidateLeaderboard(game.id);
+			} else {
+				setError(result.message);
+			}
+		} catch {
+			setError('NO SE PUDO GUARDAR LA PUNTUACIÓN');
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	return (
@@ -145,22 +176,23 @@ export function GamePlayer({ game }: { game: Game }) {
 						) : (
 							<div className="input-row">
 								<input
-									onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 10))}
+									onChange={(e) =>
+										setName(e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '').slice(0, 10))
+									}
 									placeholder="TUS INICIALES"
 									value={name}
 								/>
 								<button
 									className="btn yellow"
-									onClick={() => {
-										saveScore({ game: game.id, score, name });
-										setSaved(true);
-									}}
+									disabled={submitting}
+									onClick={submitFinalScore}
 									type="button"
 								>
-									GUARDAR PUNTUACIÓN
+									{submitting ? 'GUARDANDO…' : 'GUARDAR PUNTUACIÓN'}
 								</button>
 							</div>
 						)}
+						{error && !saved && <div className="toast-error">▸ {error}</div>}
 						<div className="actions">
 							<button className="btn" onClick={restart} type="button">
 								JUGAR DE NUEVO

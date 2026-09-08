@@ -934,6 +934,12 @@ a {
   color: var(--bronze);
   text-shadow: 0 0 6px rgba(217, 122, 58, 0.5);
 }
+.lb-row.empty {
+  display: block;
+  grid-template-columns: none;
+  text-align: center;
+  padding: 28px 16px;
+}
 
 /* ===== player ===== */
 .av-player {
@@ -1211,6 +1217,16 @@ a {
   border-right: 2px solid var(--green);
   animation: typewriter 1.6s steps(22) forwards, caret 0.8s steps(1) infinite;
   width: 0;
+}
+.toast-error {
+  font-family: var(--pixel);
+  font-size: 11px;
+  color: var(--magenta);
+  text-shadow: 0 0 8px var(--magenta);
+  margin-top: 14px;
+  white-space: normal;
+  display: block;
+  animation: fadeIn 240ms ease-out;
 }
 @keyframes typewriter {
   to {
