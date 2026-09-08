@@ -3,15 +3,37 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { GAMES, seededScores } from '@/lib/games';
+import { type Game, seededScores } from '@/lib/games';
 
-export function HallOfFame() {
+export function HallOfFame({ games }: { games: Game[] }) {
 	const { user } = useAuth();
-	const [tab, setTab] = useState(GAMES[0].id);
+	const [tab, setTab] = useState(games[0]?.id ?? '');
 	const rows = useMemo(() => seededScores(tab.length * 23 + 7, 12), [tab]);
-	const game = GAMES.find((g) => g.id === tab) ?? GAMES[0];
+	const game = games.find((g) => g.id === tab) ?? games[0];
 	const youRank = user ? Math.floor(8 + (tab.length % 4)) : null;
 	const youScore = user ? (rows[5]?.score ?? 0) - 2400 : null;
+
+	if (games.length === 0 || !game) {
+		return (
+			<div className="av-hall fade-in">
+				<div className="hall-head">
+					<h1>SALÓN DE LA FAMA</h1>
+					<p className="pixel" style={{ fontSize: 10 }}>
+						LOS NOMBRES QUE NUNCA SE BORRAN DE LA PANTALLA
+					</p>
+				</div>
+				<div style={{ textAlign: 'center', padding: 80, color: 'var(--ink-faint)' }}>
+					<div
+						className="pixel"
+						style={{ fontSize: 14, color: 'var(--magenta)', marginBottom: 12 }}
+					>
+						NO HAY JUEGOS DISPONIBLES
+					</div>
+					<div>Vuelve más tarde para ver el salón de la fama.</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="av-hall fade-in">
@@ -23,7 +45,7 @@ export function HallOfFame() {
 			</div>
 
 			<div className="hall-tabs">
-				{GAMES.map((g) => (
+				{games.map((g) => (
 					<button
 						className={`chip${tab === g.id ? ' active' : ''}`}
 						key={g.id}

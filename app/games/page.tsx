@@ -1,6 +1,11 @@
 import { GameGrid } from "@/components/GameGrid";
+import { getAllGames } from "@/lib/games-server";
 
-export default function GamesPage() {
+export const revalidate = 300;
+
+export default async function GamesPage() {
+  const result = await getAllGames();
+
   return (
     <div className="fade-in">
       <section className="av-hero">
@@ -10,7 +15,7 @@ export default function GamesPage() {
         </div>
       </section>
 
-      <GameGrid />
+      <GameGrid games={result.ok ? result.games : []} failed={!result.ok} />
     </div>
   );
 }

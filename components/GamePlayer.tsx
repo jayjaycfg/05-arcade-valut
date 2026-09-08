@@ -3,14 +3,18 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { revalidateLeaderboard } from '@/app/actions/revalidate-leaderboard';
-import { AsteroidsGame, type AsteroidsGameHandle } from '@/components/games/AsteroidsGame';
+import type { AsteroidsGameHandle } from '@/components/games/AsteroidsGame';
 import { useAuth } from '@/lib/auth-context';
+import { getEngine } from '@/lib/game-engines';
 import type { Game } from '@/lib/games';
 import { submitScore } from '@/lib/leaderboard-client';
 
 export function GamePlayer({ game }: { game: Game }) {
 	const { user, saveScore } = useAuth();
-	const isAsteroids = game.id === 'asteroids';
+	// Effective playability requires both the catalog flag and a registered
+	// engine (see game-player spec: "Catalog playable flag gates engine use").
+	const Engine = game.playable ? getEngine(game.id) : undefined;
+	const usesEngine = Boolean(Engine);
 	const asteroidsRef = useRef<AsteroidsGameHandle>(null);
 	const [score, setScore] = useState(0);
 	const [lives, setLives] = useState(3);
@@ -23,19 +27,19 @@ export function GamePlayer({ game }: { game: Game }) {
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (isAsteroids || over || paused) return;
+		if (usesEngine || over || paused) return;
 		const t = setInterval(() => setScore((s) => s + Math.floor(10 + Math.random() * 90)), 220);
 		return () => clearInterval(t);
-	}, [isAsteroids, over, paused]);
+	}, [usesEngine, over, paused]);
 
 	useEffect(() => {
-		if (isAsteroids) return;
+		if (usesEngine) return;
 		if (score > 0 && score % 2500 < 100) setLevel((l) => l + 1);
-	}, [isAsteroids, score]);
+	}, [usesEngine, score]);
 
 	const endGame = () => setOver(true);
 	const restart = () => {
-		if (isAsteroids) asteroidsRef.current?.reset();
+		if (usesEngine) asteroidsRef.current?.reset();
 		setScore(0);
 		setLives(3);
 		setLevel(1);
@@ -120,8 +124,8 @@ export function GamePlayer({ game }: { game: Game }) {
 
 			<div className="crt">
 				<div className="crt-screen">
-					{isAsteroids ? (
-						<AsteroidsGame
+					{Engine ? (
+						<Engine
 							ref={asteroidsRef}
 							onState={(s) => {
 								setScore(s.score);

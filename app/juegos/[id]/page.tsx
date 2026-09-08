@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Leaderboard } from "@/components/Leaderboard";
-import { GAMES, getGame } from "@/lib/games";
+import { formatPlays, safeCover } from "@/lib/games";
+import { getAllGames, getGameById } from "@/lib/games-server";
 import { getTopScores } from "@/lib/leaderboard-server";
 
 // Cookie-free read (see lib/leaderboard-server.ts), so this route stays
@@ -10,8 +11,12 @@ import { getTopScores } from "@/lib/leaderboard-server";
 // minute instead of forcing fully dynamic rendering (design.md - Rendering).
 export const revalidate = 60;
 
-export function generateStaticParams() {
-  return GAMES.map((g) => ({ id: g.id }));
+export async function generateStaticParams() {
+  const result = await getAllGames();
+  // A build-time catalog outage degrades to on-demand rendering (default
+  // `dynamicParams: true`) instead of failing the whole build.
+  if (!result.ok) return [];
+  return result.games.map((g) => ({ id: g.id }));
 }
 
 export async function generateMetadata({
@@ -20,7 +25,8 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const game = getGame(id);
+  const result = await getGameById(id);
+  const game = result.ok ? result.game : null;
   return { title: game ? `${game.title} · Arcade Vault` : "Arcade Vault" };
 }
 
@@ -30,7 +36,12 @@ export default async function GameDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const game = getGame(id);
+  const result = await getGameById(id);
+  // A read failure is a distinct error condition, not evidence the game is
+  // missing — it must not render as a 404 (game-detail spec: "Catalog read
+  // failure is not treated as unknown game"). `error.tsx` handles the throw.
+  if (!result.ok) throw new Error("Failed to load game catalog");
+  const game = result.game;
   if (!game) notFound();
 
   const scoresResult = await getTopScores(id);
@@ -41,7 +52,7 @@ export default async function GameDetailPage({
     <div className="av-detail fade-in">
       <div>
         <div className="detail-cover">
-          <div className={`cover-bg ${game.cover}`} />
+          <div className={`cover-bg ${safeCover(game.cover)}`} />
         </div>
         <div style={{ marginTop: 20 }} className="detail-info">
           <div className="detail-tags">
@@ -55,7 +66,7 @@ export default async function GameDetailPage({
           <div className="stat-strip">
             <div>
               <div className="l">Partidas</div>
-              <div className="v">{game.plays}</div>
+              <div className="v">{formatPlays(game.plays)}</div>
             </div>
             <div>
               <div className="l">Mejor global</div>
