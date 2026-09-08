@@ -2,17 +2,40 @@
 
 import { useMemo, useState } from 'react';
 import { GameCard } from '@/components/GameCard';
-import { CATS, GAMES } from '@/lib/games';
+import { CATS, type Game } from '@/lib/games';
 
-export function GameGrid() {
+export function GameGrid({ games, failed = false }: { games: Game[]; failed?: boolean }) {
 	const [q, setQ] = useState('');
 	const [cat, setCat] = useState('TODOS');
 
 	const filtered = useMemo(() => {
-		return GAMES.filter(
+		return games.filter(
 			(g) => (cat === 'TODOS' || g.cat === cat) && g.title.toLowerCase().includes(q.toLowerCase()),
 		);
-	}, [q, cat]);
+	}, [games, q, cat]);
+
+	if (failed) {
+		return (
+			<div className="av-grid">
+				<div
+					style={{
+						gridColumn: '1 / -1',
+						textAlign: 'center',
+						padding: 80,
+						color: 'var(--ink-faint)',
+					}}
+				>
+					<div
+						className="pixel"
+						style={{ fontSize: 14, color: 'var(--magenta)', marginBottom: 12 }}
+					>
+						NO SE PUDO CARGAR EL CATÁLOGO
+					</div>
+					<div>Inténtalo de nuevo en unos instantes.</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<>

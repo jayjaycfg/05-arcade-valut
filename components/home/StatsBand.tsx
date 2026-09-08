@@ -1,6 +1,6 @@
-import { stats } from '@/lib/home';
+import type { Stat } from '@/lib/home';
 
-export function StatsBand() {
+export function StatsBand({ stats }: { stats: Stat[] }) {
 	return (
 		<section className="home-stats">
 			<div className="stats-inner">

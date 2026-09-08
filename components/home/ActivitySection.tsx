@@ -1,7 +1,13 @@
 import Link from 'next/link';
-import { recentActivity, topPlayersToday } from '@/lib/home';
+import type { ActivityRow, TopPlayerRow } from '@/lib/home';
 
-export function ActivitySection() {
+export function ActivitySection({
+	recentActivity,
+	topPlayersToday,
+}: {
+	recentActivity: ActivityRow[];
+	topPlayersToday: TopPlayerRow[];
+}) {
 	return (
 		<section className="home-section">
 			<div className="section-head">

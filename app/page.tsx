@@ -6,8 +6,13 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { PricingSection } from "@/components/home/PricingSection";
 import { Reveal } from "@/components/home/Reveal";
 import { StatsBand } from "@/components/home/StatsBand";
+import { getHomeData, topPlayersToday } from "@/lib/home";
 
-export default function Home() {
+export const revalidate = 300;
+
+export default async function Home() {
+  const { featuredGames, stats, recentActivity } = await getHomeData();
+
   return (
     <div className="home fade-in">
       <HeroSection />
@@ -17,15 +22,15 @@ export default function Home() {
       </Reveal>
 
       <Reveal>
-        <GamesRail />
+        <GamesRail games={featuredGames} />
       </Reveal>
 
       <Reveal>
-        <StatsBand />
+        <StatsBand stats={stats} />
       </Reveal>
 
       <Reveal>
-        <ActivitySection />
+        <ActivitySection recentActivity={recentActivity} topPlayersToday={topPlayersToday} />
       </Reveal>
 
       <Reveal>

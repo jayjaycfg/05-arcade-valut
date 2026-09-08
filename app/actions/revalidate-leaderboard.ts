@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { GAMES } from "@/lib/games";
+import { getGameById } from "@/lib/games-server";
 
 /**
  * Busts the ISR cache for a game's detail page right after a score is
@@ -12,10 +12,11 @@ import { GAMES } from "@/lib/games";
  * the app's UI (Next.js docs - Mutating Data), so `gameId` is validated
  * against the real catalog before doing anything — this only busts a public,
  * non-sensitive cache, but there is no reason to let an arbitrary string
- * through.
+ * through. A catalog read failure also results in no-op, matching the
+ * "fail closed" behavior of the previous check.
  */
 export async function revalidateLeaderboard(gameId: string): Promise<void> {
-  const isKnownGame = GAMES.some((g) => g.id === gameId);
-  if (!isKnownGame) return;
+  const result = await getGameById(gameId);
+  if (!result.ok || !result.game) return;
   revalidatePath(`/juegos/${gameId}`);
 }

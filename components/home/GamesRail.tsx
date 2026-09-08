@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { featuredGames } from '@/lib/home';
+import type { Game } from '@/lib/games';
 
-export function GamesRail() {
+export function GamesRail({ games }: { games: Game[] }) {
 	return (
 		<section className="home-section">
 			<div className="section-head">
@@ -10,7 +10,7 @@ export function GamesRail() {
 				<div className="section-rule" />
 			</div>
 			<div className="mini-rail">
-				{featuredGames.map((game) => (
+				{games.map((game) => (
 					<Link className="mini-card" href={`/juegos/${game.id}`} key={game.id}>
 						<div className="mini-cover">
 							<div className={`cover-bg ${game.cover}`} />
